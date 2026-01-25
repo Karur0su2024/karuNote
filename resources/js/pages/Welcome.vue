@@ -2,11 +2,12 @@
 
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
+import CreateNote from './createNote.vue';
 // 1. Definujte props (co dostanete z Laravel)
 defineProps<{
     // canRegister: boolean;
-    // numberOfUsers: number;
-
+    // numberOfUsers: number`
     notes: Array<{
         id: number;
         title: string;
@@ -14,7 +15,6 @@ defineProps<{
         created_at: string;
         updated_at: string;
     }>;
-
 
 }>();
 
@@ -32,20 +32,9 @@ const openModal = (note: any) => {
     isModalOpen.value = true;
 };
 
-
-
-const form = useForm({
-        title: '',
-        content: '',
-    });
-
 const message = 'Vítejte na mé nové stránce!';
-const nums = [1, 2, 3, 4, 5];
 
-const addNote = () => {
-    form.post('/notes');
-};
-
+const isCreateNoteOpen = ref(false);
 
 </script>
 
@@ -53,24 +42,13 @@ const addNote = () => {
     <div class="p-5">
         <h1 class="text-3xl">karuNote</h1>
     </div>
+
+    <button class="px-4 py-2 bg-blue-500 text-white rounded" @click="isCreateNoteOpen = true">
+        Vytvořit novou poznámku
+    </button>
+
     <div class="p-8 m-2 bg-gray-100 rounded shadow-sm">
         <p>{{ message }}</p>
-    </div>
-
-    <div class="m-2 p-5 bg-gray-100 rounded shadow">
-        <form @submit.prevent="addNote">
-            <div class="mb-4">
-                <input v-model="form.title" type="text" placeholder="Nadpis" class="w-full p-2 border rounded" />
-            </div>
-            <div class="mb-4">
-                <textarea v-model="form.content" class="w-full p-2 border rounded">
-                    Zde napište svou poznámku...
-                </textarea>
-            </div>
-            <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">
-                Přidat poznámku
-            </button>
-        </form>
     </div>
 
     <div class="p-5">
@@ -85,14 +63,16 @@ const addNote = () => {
         </div>
     </div>
 
-<div v-if="isModalOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-lg w-1/2">
-        <h2 class="text-2xl font-bold mb-4">{{ selectedNote!.title ?? 'Nadpis' }}</h2>
-        <p class="mb-4">{{ selectedNote!.content ?? 'Obsah poznámky' }}</p>
-        <button @click="isModalOpen = false" class="px-4 py-2 bg-gray-500 text-white rounded cursor-pointer">
-            Zavřít
-        </button>
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded shadow-lg w-1/2">
+            <h2 class="text-2xl font-bold mb-4">{{ selectedNote!.title ?? 'Nadpis' }}</h2>
+            <p class="mb-4">{{ selectedNote!.content ?? 'Obsah poznámky' }}</p>
+            <button @click="isModalOpen = false" class="px-4 py-2 bg-gray-500 text-white rounded cursor-pointer">
+                Zavřít
+            </button>
+        </div>
     </div>
-</div>
+
+    <CreateNote v-model:open="isCreateNoteOpen" />
 
 </template>
